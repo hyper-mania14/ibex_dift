@@ -1,0 +1,41 @@
+// attack_test.mem
+// Pre-assembled RISC-V machine code for attack_test.S
+// Target: RV32IM, little-endian, word-addressed hex
+// Boot address: 0x00000000
+//
+// Source:
+//   li   t0, 0x0000EAA8  -> csrw 0x7C3, t0  (TPR = OR all)
+//   li   t1, 0x00000040  -> csrw 0x7C2, t1  (TCR = LOADSTORE_CHECK_DA)
+//   li   a0, 0x00010000
+//   lw   a1, 0(a0)       -> a1 gets tainted pointer
+//   li   t2, 0xDEADBEEF
+//   sw   t2, 0(a1)       -> address a1 is tainted -> DIFT exception
+//   li   t6, 0xBAD0
+// loop: j loop
+
+// lui  t0, 0x0000E
+0000E2B7
+// addi t0, t0, 0xAA8
+AA828293
+// csrw 0x7C3, t0           (TPR)
+7C329073
+// addi t1, x0, 0x40
+04000313
+// csrw 0x7C2, t1           (TCR)
+7C231073
+// lui  a0, 0x10
+00010537
+// lw   a1, 0(a0)
+0005A583
+// lui  t2, 0xDEADC
+DEADC3B7
+// addi t2, t2, -273
+EEF38393
+// sw   t2, 0(a1)            (tainted address -> DIFT exception)
+0025A023
+// lui  t6, 0xB
+0000BB37
+// addi t6, t6, 0xAD0
+AD0F8F93
+// loop: jal x0, 0
+0000006F

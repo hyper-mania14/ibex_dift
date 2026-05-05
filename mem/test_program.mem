@@ -1,0 +1,43 @@
+// normal_test.mem
+// Pre-assembled RISC-V machine code for normal_test.S
+// Target: RV32IM, little-endian, word-addressed hex
+// Boot address: 0x00000000
+//
+// Source:
+//   li   t0, 0x0000EAA8   csrw 0x7C3, t0   (TPR = OR all)
+//   li   t1, 0x0          csrw 0x7C2, t1   (TCR = 0, no checks)
+//   li   a0, 0x00010000
+//   li   t2, 42
+//   sw   t2, 0(a0)         store 42 at DMEM[0]
+//   lw   t3, 0(a0)         load back
+//   li   t4, 10
+//   add  t5, t3, t4
+//   sw   t5, 4(a0)
+// loop: j loop
+
+// lui  t0, 0x0000E
+0000E2B7
+// addi t0, t0, 0xAA8
+AA828293
+// csrw 0x7C3, t0
+7C329073
+// addi t1, x0, 0           (t1 = 0)
+00000313
+// csrw 0x7C2, t1
+7C231073
+// lui  a0, 0x10             (a0 = 0x00010000)
+00010537
+// addi t2, x0, 42           (t2 = 42 = 0x2A)
+02A00393
+// sw   t2, 0(a0)
+00752023
+// lw   t3, 0(a0)
+0005AE03
+// addi t4, x0, 10           (t4 = 10)
+00A00E93
+// add  t5, t3, t4
+01DE0F33
+// sw   t5, 4(a0)
+01E52223
+// loop: jal x0, 0
+0000006F
